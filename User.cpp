@@ -1,4 +1,6 @@
 #include "User.h"
+#include "BankSoal.h"
+
 
 void createUserList(ListUser &L) {
     firstUser(L) = nilUser;
@@ -36,6 +38,22 @@ AddressUser findUserByUsername(const ListUser &userList, const string &username)
     }
 
     return nilUser;  // User not found
+}
+void deleteLastUser(ListUser &L, AddressUser &P){
+    AddressUser Q;
+    if (firstUser(L) == nullptr) {
+        cout << "List Kosong " << endl;
+    } else if (nextUser(firstUser(L)) == nullptr) {
+        P = firstUser(L);
+        firstUser(L) = nullptr;
+    } else{
+        P = firstUser(L);
+        do {
+            Q = P;
+            P = nextUser(P);
+        } while (nextUser(P) != firstUser(L));
+        nextUser(Q) = nullptr;
+    }
 }
 
 bool checkUsername(ListUser L, string name) {
@@ -86,7 +104,6 @@ void registerUser(ListUser &L) {
     return;
 }
 
-
 bool loginUser(ListUser L, string username, string password) {
     AddressUser P = firstUser(L);
 
@@ -113,9 +130,113 @@ void showAllUser(ListUser& L) {
         do {
             cout << "User-" << i << ": " << infoUser(P).username << endl;
             i++;
+            cout << infoUser(P).skor << endl;
             P = nextUser(P);
         } while (P != firstUser(L));
     } else {
         cout << "Kosong" << endl;
     }
 }
+
+void showSkor(ListUser& L) {
+    int i = 1;
+    AddressUser P = firstUser(L);
+
+    if (P != nilUser) {
+        cout << "\nDaftar User" << endl;
+        do {
+            cout << "User-" << i << ": " << infoUser(P).username << endl;
+            i++;
+            //cout << infoUser(P).skor << endl;
+            P = nextUser(P);
+        } while (P != firstUser(L));
+    } else {
+        cout << "Kosong" << endl;
+    }
+}
+
+void displayParticipantScores(ListUser L) {
+    AddressUser P = firstUser(L);
+
+    if (P == nilUser) {
+        cout << "Belum ada peserta yang mengikuti kuis." << endl;
+        return;
+    }
+
+    cout << "+=========================+" << endl;
+    cout << "| Daftar Skor Peserta     |" << endl;
+    cout << "+=========================+" << endl;
+
+    while (P != nilUser) {
+        if (infoUser(P).skor >= 0) {
+            cout << "Skor Peserta: " << infoUser(P).skor << endl;
+        }
+        P = nextUser(P);
+    }
+}
+
+int countUser(ListUser L) {
+    int count = 0;
+    AddressUser P = firstUser(L);
+    do {
+        count++;
+        P = nextUser(P);
+    } while (P != firstUser(L));
+    return count;
+}
+
+//belom selesai
+void SortDescending(ListUser L){
+    ListUser sortedList; //bikin list baru
+    if (firstUser(L) == nilUser || nextUser(firstUser(L)) == nilUser) {
+    // Jika list kosong atau hanya satu elemen, sudah terurut
+        return;
+    }
+    //ListUser sortedList;
+    sortedList.firstUser = L.firstUser;
+
+    AddressUser sorted = nilUser;
+    AddressUser current = L.firstUser;
+
+    do  {
+        if (infoUser(current).skor != -1) {
+           AddressUser next = nextUser(current);
+
+
+        if (sorted == nilUser || infoUser(current).skor >= infoUser(sorted).skor) {
+            prevUser(current) = nilUser;
+            nextUser(current) = sorted;
+
+            if (sorted != nilUser) {
+                prevUser(sorted) = current;
+            }
+
+            sorted = current;
+        } else {
+            AddressUser temp = sorted;
+
+            while (nextUser(temp) != nilUser && infoUser(current).skor < infoUser(nextUser(temp)).skor) {
+                temp = nextUser(temp);
+            }
+
+            nextUser(current) = nextUser(temp);
+            prevUser(current) = temp;
+
+            if (nextUser(temp) != nilUser) {
+                prevUser(nextUser(temp)) = current;
+            }
+
+            nextUser(temp) = current;
+            }
+        }
+        current = nextUser(current);
+    } while (current != nilUser);
+    showAllUser(L);
+
+}
+
+void Quiz(ListUser &LU, ListSoal &LS){
+
+
+}
+
